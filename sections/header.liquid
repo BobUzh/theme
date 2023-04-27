@@ -657,6 +657,15 @@
         {%- endif -%} {% endcomment %}
         Cart({{ cart.item_count }})
       </a>
+
+
+      <a class="custom-header-btn a-btn" href="{{section.settings.url-btn}}">
+         {% render 'icon-rein-left' %}
+            {{ section.settings.name-btn}}
+         {% render 'icon-rain-right' %}
+      </a>  
+
+      
     </div>
   </header>
 </{% if section.settings.sticky_header_type != 'none' %}sticky-header{% else %}div{% endif %}>
@@ -849,6 +858,16 @@
       ],
       "default": "background-1",
       "label": "t:sections.all.colors.label"
+    },
+    {
+       "type":"text",
+       "id":"name-btn",
+       "label":"Header button name"
+     },
+    {
+      "type":"url",
+       "id":"url-btn",
+       "label":"Header button url"
     },
     {
       "type": "header",

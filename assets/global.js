@@ -914,6 +914,8 @@ class VariantSelects extends HTMLElement {
         // prevent unnecessary ui changes from abandoned selections
         if (this.currentVariant.id !== requestedVariantId) return;
 
+        let additionalSum = document.getElementsByClassName('custom-price-item')[0]?.getAttribute('data-price');
+
         const html = new DOMParser().parseFromString(responseText, 'text/html')
         const destination = document.getElementById(`price-${this.dataset.section}`);
         const source = html.getElementById(`price-${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section}`);
@@ -943,6 +945,14 @@ class VariantSelects extends HTMLElement {
           html,
           variant: this.currentVariant
         }});
+
+        let productPrice = price.querySelector('.price-item.price-item--regular').getAttribute('data-price');
+        if(additionalSum != undefined) {
+          let resultOfSum = Number(additionalSum) + Number(productPrice);
+          document.getElementsByClassName('custom-price-item')[0].textContent = resultOfSum;
+          console.log(document.getElementsByClassName('custom-price-item')[0].innerText)
+          document.getElementsByClassName('custom-price-item')[0].setAttribute('data-price', additionalSum)
+        }
       });
   }
 

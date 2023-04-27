@@ -1,6 +1,6 @@
 <section
   id="MainProduct-{{ section.id }}"
-  class="page-width section-{{ section.id }}-padding"
+  class="custom-product-container page-width section-{{ section.id }}-padding"
   data-section="{{ section.id }}">
   {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
   {{ 'component-accordion.css' | asset_url | stylesheet_tag }}
@@ -32,6 +32,10 @@
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
+
   {% if section.settings.image_zoom == 'hover' %}
     <script
       id="EnableZoomOnHover-main"
@@ -61,7 +65,7 @@
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
 
-  <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
+  <div class="custom-product product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
     <div class="grid__item product__media-wrapper{% if section.settings.media_position == 'right' %} medium-hide large-up-hide{% endif %}">
       {% render 'product-media-gallery', variant_images: variant_images %}
     </div>
@@ -85,20 +89,22 @@
                 </h2>
               </a>
             </div>
-            <div class="plan-length">
-              <p>Meal Plan Length:</p>
-            </div>
             <div class="zip-code">
-              <label for="zip">Enter zip code to view options in your area</label>
+              <label for="zip" class="custom-title">Enter zip code to view options in your area</label>
               <div class="input-group">
                 <input id="zip" type="text">
                 <button>GO</button>
               </div>
+            <span class="error-message error-hidden custom-title">Sorry, we do not deliver to this zip code</span>
+            </div>
+            <div class="plan-length">
+              <p class="custom-title">Meal Plan Length:</p>
             </div>
             {% assign zips = settings.zip_codes %}
+            
             {%- when 'price' -%}
             <div
-              class="event-pointer event-pointer_disabled no-js-hidden"
+              class="custom-price-wrapper event-pointer event-pointer_disabled no-js-hidden"
               id="price-{{ section.id }}"
               role="status"
               {{ block.shopify_attributes }}>
@@ -106,7 +112,26 @@
                 , product: product,
                 use_variant: true,
                 show_badges: true,
-                price_class: 'price--large' -%}
+                price_class: 'price--large hidden-price',
+                price_title: 'Final Price' -%}
+              <div class="price price--large">
+                
+                {%  assign customPrice = product.selected_or_first_available_variant.price %}
+                <div class="custom-price-title addon-custom-title">Final Price</div>
+                <div class="price__container">
+                  <div class="price__regular">
+                    <span class="">$</span>
+                    <span class="custom-price-item" data-price="0">25</span>
+                  </div>
+                </div>
+              </div>
+              <div class="custom-buy-btn" id="custom-btn">
+                  <button class="a-btn">
+                    {% render 'icon-rein-left' %}
+                    Add TO Card
+                   {% render 'icon-rain-right' %}
+                  </button>
+              </div>
             </div>
             {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
               <div class="product__tax caption rte">
@@ -132,22 +157,41 @@
             {%- when 'variant_picker' -%}
             {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id, variant_class: 'event-pointer event-pointer_disabled' %}
             {%- when 'buy_buttons' -%}
-            {%- render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true, buy_button_class: 'event-pointer event-pointer_disabled' -%}
+            {%- render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true, buy_button_class: 'event-pointer event-pointer_disabled d-none' -%}
             {%- when 'collection' -%}
+              <p class="custom-title">Add-Ons</p>
+              <p class="custom-subtitle">Available as an add-on to keep your partner nourished alongside you as you both navigate parenthood</p>
             <div class="event-pointer event-pointer_disabled select-plan">
               {% assign collection = block.settings.custom_collection %}
-              {{section.id}}
-              <div class="main-product-item product-item">
-                <p>{{ product.title }}</p>
-                <p>{{ product.price }}</p>
+              <div class="main-product-item" data-price={{product.price}}>
+                <p class="addon-custom-title">{{ product.title }}</p>
+                <p class="custom-title">+ {{ product.price }}</p>
               </div>
               {% for product in collection.products %}
-                <div class="product-item">
-                  <p>{{ product.title }}</p>
-                  <p>{{ product.price | money }}</p>
+                <div class="product-item" data-product-id={{product.selected_or_first_available_variant.id}} data-price={{product.price}}>
+                  <p class="addon-custom-title">{{ product.title }}</p>
+                  <p class="custom-title">+ {{ product.price | money }}</p>
                 </div>
               {% endfor %}
             </div>
+            {% when 'date-picker' %}
+              {% assign sun = block.settings.sun %}
+              {% assign mon = block.settings.mon %}
+              {% assign tue = block.settings.tue %}
+              {% assign wed = block.settings.wed %}
+              {% assign thu = block.settings.thu %}
+              {% assign fri = block.settings.fri %}
+              {% assign sat = block.settings.sat %}
+              <div class="date-picker event-pointer event-pointer_disabled">
+                <p class="custom-title">{{ block.settings.date_title }}</p>
+                <p class="custom-subtitle ">{{ block.settings.date_description }}</p>
+                <div class="flatpickr calendar">
+                  <input id="picker" type="text"  placeholder="Select Date" name="date" form='{{product_form_id}}'>
+                  <a class="calendar-button" title="toggle" data-toggle>
+                    {% render 'icon-calendar' %}
+                  </a>
+                </div>
+              </div>
           {%- endcase -%}
         {%- endfor -%}
       </product-info>
@@ -161,6 +205,7 @@
   </div>
 
   {% render 'product-media-modal' variant_images: variant_images %}
+  <script src="{{ 'custom-product.js' | asset_url }}" defer="defer"></script>
 
   {%- if product.media.size > 0 -%}
     <script src="{{ 'product-modal.js' | asset_url }}" defer="defer"></script>
@@ -177,11 +222,7 @@
         return msie > 0 || trident > 0;
       }
 
-      if (! isIE()) 
-        return;
-      
-
-
+      if (! isIE()) return;
 
       const hiddenInput = document.querySelector('#{{ product_form_id }} input[name="id"]');
       const noScriptInputWrapper = document.createElement('div');
@@ -249,7 +290,6 @@
   </script>
 </section>
 
-
 {% schema %}
   {
     "name": "t:sections.main-product.name",
@@ -267,6 +307,64 @@
           {
             "type": "paragraph",
             "content": "t:sections.main-product.blocks.rating.settings.paragraph.content"
+          }
+        ]
+      },
+      {
+        "type": "date-picker",
+        "name": "date-picker",
+        "settings": [
+          {
+            "type": "text",
+            "id": "date_title",
+            "label": "tite"
+          },
+          {
+            "type": "text",
+            "id": "date_description",
+            "label": "description"
+          },
+          {
+            "type": "checkbox",
+            "id": "sun",
+            "label": "Sunday",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "mon",
+            "label": "Monday",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "tue",
+            "label": "Tuesday",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "wed",
+            "label": "Wedsday",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "thu",
+            "label": "Thusday",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "fri",
+            "label": "Friday",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "sat",
+            "label": "Saturday",
+            "default": false
           }
         ]
       },
@@ -547,8 +645,8 @@
   }
 {% endschema %}
 
-{% stylesheet %}
-    .product__title h1 {
+{% style %}
+  .product__title h1 {
     font-family: Taviraj;
     font-size: 34px;
     font-style: italic;
@@ -557,12 +655,20 @@
     letter-spacing: 0.25px;
     text-align: left;
   }
-  .zip-code label {
+  .custom-title {
     font-family: Palo Wide;
     font-size: 16px;
     font-weight: 600;
     line-height: 22px;
     letter-spacing: 0.15px;
+    text-align: left;
+  }
+  .custom-subtitle {
+    font-family: Palo;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 22px;
+    letter-spacing: 0.5px;
     text-align: left;
   }
   .input-group {
@@ -587,21 +693,18 @@
     background: #0e1b4d;
     transition: 0.5s;
   }
+  .zip-code .error-message {
+    color: red;
+  }
+  .zip-code .error-hidden {
+    color: transparent;
+  }
   #zip {
     padding: 8px 8px 8px 16px;
     border: 1px solid #DBD8D6;
     border-radius: 8px;
     width: 100%;
     height: 48px
-  }
-  .plan-length p {
-    font-family: 'Palo Wide';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 140%;
-    letter-spacing: 0.15px;
-    color: #262626;
   }
   .disabled + label {
     display: none !important;
@@ -616,15 +719,15 @@
     flex-wrap: wrap;
     gap: 16px
   }
-  .product-item {
+  .product-item, .main-product-item {
     background-color: white;
-    padding: 19.5px 16px;
+    padding: 8px 16px;
     position: relative;
     width: 48%;
     border: 1px solid #DBD8D6;
     border-radius: 8px;
   }
-  .product-item p {
+  .product-item p, .main-product-item p {
     cursor: pointer;
     font-family: Palo Wide;
     font-size: 14px;
@@ -649,60 +752,85 @@
     opacity: 0.5;
     pointer-events: none;
   }
-{% endstylesheet %}
+  .calendar {
+    display: flex;
+    align-items: center;
+  }
+  .calendar input {
+    width: 100%;
+    height: 48px;
+    padding-left: 60px;
+  }
+  .calendar-button {
+    position: absolute;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+  }
+  .calendar-button svg {
+    height: 32px;
+  }
+  .form-control input {
+    height: 100%;
+  }
+{% endstyle %}
 
 {% javascript %}
-    let mainSection = $("[id^=MainProduct-template--]").parent('section');
-  mainSection.css('background', 'linear-gradient(0deg, rgba(255,255,255,1) 53%, rgba(250,247,242,1) 95%, rgba(247,243,236,1) 100%)');
 
-  let varisntSelect = $('.product-form__input--dropdown select');
-  let [firstSelect, secondSelect] = varisntSelect;
-  let isActive = $(secondSelect).val() != 'no';
-  isActive ? $(this).removeClass('product-item_active') : $(this).addClass('product-item_active');
+  // $('variant-radios')[0].addEventListener('change', function() {
+  //   console.log('=1=1=1=1=')
+  //   console.log($(this))
+  // })
 
-  $('.main-product-item').click(function() {
-    let firstSelectedValue = $(firstSelect).val();
-    let secondSelectedValue = $(secondSelect).val();
-
-    let newValue = secondSelectedValue == 'no' ?  firstSelectedValue : 'no';
-
-    let isActive = secondSelectedValue != 'no';
-    isActive ? $(this).removeClass('product-item_active') : $(this).addClass('product-item_active');
-
-    $(secondSelect).val(newValue).change();
-   //document.querySelector('variant-selects .product-form__input:nth-child(2) select').value = 'no';
-
-  });
-
-document.querySelector('variant-selects .product-form__input:nth-child(1) select').addEventListener('change', function(event) {
-  if(!document.querySelector('.main-product-item').classList.contains('product-item_active')){
-  return;
-  }else{
-    document.querySelector('variant-selects .product-form__input:nth-child(2) select').value = event.target.value;    
-  }
-});
-
-
-
+  // $('.zip-code button').click(function() {
+  //   let zip = $(this).closest('.input-group').find('#zip').val();
+  //   console.log(zip);
+  //   var zips = zipsArray;
+  //   console.log(zips);
+  // })
+  // console.log('=1=2=3');
+  // console.log($('variant-radios'));
 {% endjavascript %}
-
 <script>
+  
+$('.custom-price-item').text('{{customPrice}}')
+/////////////////////////////////////////// --CALENDAR-- /////////////////////////////////////////
+let week = ['{{sun}}', '{{mon}}', '{{tue}}', '{{wed}}', '{{thu}}', '{{fri}}', '{{sat}}'];
+let weekIdx = week.map((day, idx) => day === 'true' ? idx : null);
 
+let picker_config = {
+  //magic number 2
+    minDate: new Date().fp_incr(2),
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    disable: [
+      function(date) {
+        return weekIdx.includes(date.getDay());
+      }
+    ]
+  }; 
+  $("#picker").flatpickr(picker_config);
+/////////////////////////////////////////// --CALENDAR-- /////////////////////////////////////////
+
+/////////////////////////////////////////// --ZIP-- /////////////////////////////////////////
 $('.zip-code button').click(function() {
-  let zipsValue = $(this).closest('.input-group').find('#zip').val();
-  let zipsString = '{{zips}}';
-  let isInclude = zipsString.split(',').some(e => e == zipsValue);
+  let zipValue = $(this).closest('.input-group').find('#zip').val();
+  let globalZips = '{{zips}}';
+  let isInclude = globalZips.split(',').some(e => e == zipValue);
 
   if(isInclude) {
     $('.event-pointer').each(function() {
-      console.log(this);
-      $(this).removeClass('event-pointer_disabled')
-    })
+      $(this).removeClass('event-pointer_disabled');
+    });
+    $('.zip-code .error-message').addClass('error-hidden');
   } else {
     $('.event-pointer').each(function() {
-      $(this).addClass('event-pointer_disabled')
-    })
+      $(this).addClass('event-pointer_disabled');
+    });
+    $('.zip-code .error-message').removeClass('error-hidden');
   }
-})
+});
+/////////////////////////////////////////// --ZIP-- /////////////////////////////////////////
 
 </script>

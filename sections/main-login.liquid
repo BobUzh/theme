@@ -61,7 +61,7 @@
         {{ 'customer.login_page.submit' | t }}
       </button>
 
-      <a href="#login">
+      <a href="/account/login">
         {{ 'customer.login_page.cancel' | t }}
       </a>
     {%- endform -%}
@@ -132,7 +132,7 @@
           </label>
         </div>
 
-        <a href="#recover">
+        <a href="/account/login#recover" target="_blank">
           {{ 'customer.login_page.forgot_password' | t }}
         </a>
       {%- endif -%}
@@ -164,6 +164,7 @@
 {% schema %}
 {
   "name": "t:sections.main-login.name",
+  "class":"main-login-custom",
   "settings": [
     {
       "type": "header",

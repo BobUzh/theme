@@ -1,3 +1,4 @@
+<h2 class="blog-page-featured-posts-main-title">{{ section.settings.title }}</h2>
 <div class="container">
 {%- for article in blogs.News.articles -%}
   {% if article.tags contains 'main' %}
@@ -31,7 +32,11 @@
     "class": "blog-page-featured-posts",
     
     "settings": [
-      
+      {
+         "type":"text",
+         "id":"title",
+         "label":"title"
+       }
     ],
 
      "presets": [

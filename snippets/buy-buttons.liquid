@@ -12,7 +12,7 @@
 {% endcomment %}
 <div {{ block.shopify_attributes }}>
   {%- if product != blank -%}
-    <product-form class="product-form {%- if buy_button_class %} {{ buy_button_class }}{% endif -%}">
+    <product-form class="custom-buy-buttons product-form {%- if buy_button_class %} {{ buy_button_class }}{% endif -%}">
       <div class="product-form__error-message-wrapper" role="alert" hidden>
         <svg
           aria-hidden="true"
@@ -56,7 +56,7 @@
             id = "ProductSubmitButton-{{ section_id }}"
             type="submit"
             name="add"
-            class="product-form__submit button button--full-width {% if block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+            class="add-to-cart-custom-btn product-form__submit button button--full-width {% if block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
             {% if product.selected_or_first_available_variant.available == false or quantity_rule_soldout %}
               disabled
             {% endif %}
@@ -65,7 +65,7 @@
               {%- if product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
                 {{ 'products.product.sold_out' | t }}
               {%- else -%}
-                {{ 'products.product.add_to_cart' | t }}
+               <div class="product-price-at-btn">{{ product.price | money }} | </div>{{ 'products.product.add_to_cart' | t }}
               {%- endif -%}
             </span>
             <div class="loading-overlay__spinner hidden">
@@ -81,7 +81,9 @@
             </div>
           </button>
           {%- if block.settings.show_dynamic_checkout -%}
-            {{ form | payment_button }}
+            <div class="buy-now-custom-btn">
+              {{ form | payment_button }}
+            </div>
           {%- endif -%}
         </div>
       {%- endform -%}

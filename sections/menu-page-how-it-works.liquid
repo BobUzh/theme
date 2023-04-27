@@ -5,6 +5,19 @@
     {{ section.settings.text }}
     <div class="content-bottom">
       <h4>{{ section.settings.content-bottom-title }}</h4>
+      
+       <div class="zip-code">
+          
+          <div class="input-group">
+            <label for="zip" class="">Enter zip code to view options in your area</label>
+            <input id="zip" type="text">
+            <button>GO</button>
+          </div>
+         <span class="error-message error-hidden ">Sorry, we do not deliver to this zip code</span>
+         <span class="good-message error-hidden ">We deliver to this zip code</span>
+        </div>
+        {% assign zips = settings.zip_codes %}
+        
     </div>
   </div>
   <div class="tabs">
@@ -21,7 +34,23 @@
     {% endfor %}
   </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+<script>
+  $('.zip-code button').click(function() {
+    let zipValue = $(this).closest('.input-group').find('#zip').val();
+    let globalZips = '{{zips}}';
+    let isInclude = globalZips.split(',').some(e => e == zipValue);
+  
+    if(isInclude) {
+     console.log(zipValue);
+      $('.zip-code .error-message').addClass('error-hidden');
+      $('.zip-code .good-message').removeClass('error-hidden');
+    } else {
+      $('.zip-code .error-message').removeClass('error-hidden');
+      $('.zip-code .good-message').addClass('error-hidden');
+    }
+  });
+</script>
 {% schema %}
   {
     "name": "Menu page how it works",

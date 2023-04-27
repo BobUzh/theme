@@ -1,3 +1,5 @@
+$(document).ready(function(){
+
 var $page = $('html, body');
 $('a[href*="#"]').click(function() {
     $page.animate({
@@ -5,6 +7,7 @@ $('a[href*="#"]').click(function() {
     }, 400);
     return false;
 });
+
 
 $('.menu-week .iten-tab-title').click(function(){
     $(this).toggleClass('active');
@@ -45,9 +48,7 @@ $('.main-article-tags a:contains(main)').addClass('hidden');
 $('.custom-blog-tags-list a').each(function () {
   let linkBtn = $(this).attr('href');
   let mainCurrent = $('.main-page-link').attr('href');
-  let pageLink = $(location).attr("href");
-
-  if(window.location.href.indexOf(linkBtn) > -1) {
+  if(window.location.pathname == linkBtn) {
     $(this).addClass('active');
   }
   
@@ -90,10 +91,25 @@ if ($(window).width() < 1300){
 }
 
 
+$('.main-addresses-section button').addClass('a-btn');
+$('.main-login-custom button').addClass('a-btn');
+$('.main-register-custom button').addClass('a-btn');
+$('#checkout.cart__checkout-button').addClass('a-btn');
+
+$('.add-to-cart-custom-btn').append('<svg class="right" width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 4.50278C12.4984 5.56246 12.0477 6.57831 11.2466 7.32762C10.4455 8.07692 9.35949 8.49853 8.2266 8.5C6.14636 8.5 2.1523 5.72029 1.3737 5.13655L0.5 4.50278L1.3737 3.86901C2.1523 3.31306 6.12853 0.5 8.2266 0.5C9.36004 0.50294 10.4461 0.925781 11.247 1.67597C12.0479 2.42616 12.4984 3.44259 12.5 4.50278Z" fill="white"/></svg>');
+$('.add-to-cart-custom-btn').append('<svg class="left" width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 4.50278C12.4984 5.56246 12.0477 6.57831 11.2466 7.32762C10.4455 8.07692 9.35949 8.49853 8.2266 8.5C6.14636 8.5 2.1523 5.72029 1.3737 5.13655L0.5 4.50278L1.3737 3.86901C2.1523 3.31306 6.12853 0.5 8.2266 0.5C9.36004 0.50294 10.4461 0.925781 11.247 1.67597C12.0479 2.42616 12.4984 3.44259 12.5 4.50278Z" fill="white"/></svg>');
+
+
+$('.product__accordion.accordion summary').click(function(){
+  $(this).find('svg path.vertical').toggleClass('active');
+})
 
 
 
+  
 
+  
+});
 
 
 

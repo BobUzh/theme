@@ -14,40 +14,11 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient custom-contact-form-wrap">
-
-
-  <div class="contact-form-left-side">
-    <h2>{{ section.settings.title }}</h2>
-    <div class="contact-form-left-side-social">
-      <div class="social-item">
-        <h3>Instagram:</h3>
-        <a href="{{ section.settings.ig-link }}">{{ section.settings.ig-text }}</a>
-      </div>
-      <div class="social-item">
-        <h3>Facebook:</h3>
-        <a href="{{ section.settings.fb-link }}">{{ section.settings.fb-text }}</a>
-      </div>
-      <div class="social-item">
-        <h3>Email:</h3>
-        <a href="{{ section.settings.mail-link }}">{{ section.settings.mail-text }}</a>
-      </div>
-    </div>
-  </div>
-
-
-
-  <img src="{{ section.settings.img | img_url: 'master'}}">
-
-  
-  
+<div class="color-{{ section.settings.color_scheme }} gradient">
   <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
-
-    <h2 class="contact-pc-hidden">{{ section.settings.title }}</h2>
-    
     {%- if section.settings.heading != blank -%}
-      <h2 class="title title-wrapper--no-top-margin {{ section.settings.heading_size }}">
-        {{ section.settings.heading | escape }}
+      <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}">
+        {{ section.settings.heading }}
       </h2>
     {%- else -%}
       <h2 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h2>
@@ -74,29 +45,20 @@
           </li>
         </ul>
       {%- endif -%}
-
-      
-   
-      
-        <div class="field field-half">
+      <div class="contact__fields">
+        <div class="field">
           <input
             class="field__input"
             autocomplete="name"
             type="text"
             id="ContactForm-name"
-            name="contact[first_name]"
+            name="contact[{{ 'templates.contact.form.name' | t }}]"
             value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
             placeholder="{{ 'templates.contact.form.name' | t }}"
           >
-          <label class="custom-label" for="ContactForm-name">First Name</label>
+          <label class="field__label" for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
         </div>
-
-      	<div class="field field-half">
-          <input class="field__input" placeholder="Last name" type="text" name="contact[last_name]" id="last-name" />
-          <label class="custom-label" for="last-name">Last name</label>
-        </div>
-      
-        <div class="field field-half field--with-error">
+        <div class="field field--with-error">
           <input
             autocomplete="email"
             type="email"
@@ -113,8 +75,8 @@
             {% endif %}
             placeholder="{{ 'templates.contact.form.email' | t }}"
           >
-          <label class="custom-label" for="ContactForm-email">
-            Email
+          <label class="field__label" for="ContactForm-email">
+            {{- 'templates.contact.form.email' | t }}
             <span aria-hidden="true">*</span></label
           >
           {%- if form.errors contains 'email' -%}
@@ -128,144 +90,54 @@
             </small>
           {%- endif -%}
         </div>
-
-
-        <div class="field field-half">
-          <input
-            type="tel"
-            id="ContactForm-phone"
-            class="field__input"
-            autocomplete="tel"
-            name="contact[{{ 'templates.contact.form.phone' | t }}]"
-            pattern="[0-9\-]*"
-            value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
-            placeholder="{{ 'templates.contact.form.phone' | t }}"
-          >
-          <label class="custom-label" for="ContactForm-phone">Phone</label>
-        </div>
-
-        
-     
-      
-
-      <div class="field">
-        <input class="field__input" placeholder="Order number" type="text" name="contact[order_number]" id="order-number" />
-        <label class="custom-label" for="order-number">Order number, if applicable</label>
       </div>
-
+      <div class="field">
+        <input
+          type="tel"
+          id="ContactForm-phone"
+          class="field__input"
+          autocomplete="tel"
+          name="contact[{{ 'templates.contact.form.phone' | t }}]"
+          pattern="[0-9\-]*"
+          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+          placeholder="{{ 'templates.contact.form.phone' | t }}"
+        >
+        <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
+      </div>
       <div class="field">
         <textarea
           rows="10"
           id="ContactForm-body"
           class="text-area field__input"
           name="contact[{{ 'templates.contact.form.comment' | t }}]"
-          placeholder="Message"
+          placeholder="{{ 'templates.contact.form.comment' | t }}"
         >
           {{- form.body -}}
         </textarea>
-        <label class="custom-label" for="ContactForm-body">
-          Message
+        <label class="form__label field__label" for="ContactForm-body">
+          {{- 'templates.contact.form.comment' | t -}}
         </label>
       </div>
       <div class="contact__button">
-        <button type="submit" class="button a-btn">
-          {% render 'icon-rein-left' %}
-            Submit
-          {% render 'icon-rain-right' %}
+        <button type="submit" class="button">
+          {{ 'templates.contact.form.send' | t }}
         </button>
       </div>
     {%- endform -%}
-
-
-
-    
-      <div class="contact-form-left-side-social contect-ps-social-hidden">
-        <div class="social-item">
-          <h3>Instagram:</h3>
-          <a href="{{ section.settings.ig-link }}">{{ section.settings.ig-text }}</a>
-        </div>
-        <div class="social-item">
-          <h3>Facebook:</h3>
-          <a href="{{ section.settings.fb-link }}">{{ section.settings.fb-text }}</a>
-        </div>
-        <div class="social-item">
-          <h3>Email:</h3>
-          <a href="{{ section.settings.mail-link }}">{{ section.settings.mail-text }}</a>
-        </div>
-      </div>
-    
-
-    
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-  
 </div>
 
 {% schema %}
 {
   "name": "t:sections.contact-form.name",
   "tag": "section",
-  "class": "section custom-contact-form",
+  "class": "section",
   "disabled_on": {
     "groups": ["header", "footer"]
   },
   "settings": [
     {
-      "type": "image_picker",
-      "id": "img",
-      "label": "Image"
-     },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title"
-    },
-
-    {
-      "type": "url",
-      "id": "ig-link",
-      "label": "Instagram link"
-    },
-    {
-      "type": "text",
-      "id": "ig-text",
-      "label": "Instagram label"
-    },
-    {
-      "type": "url",
-      "id": "fb-link",
-      "label": "Facebook link"
-    },
-    {
-      "type": "text",
-      "id": "fb-text",
-      "label": "Facebook label"
-    },
-    {
-      "type": "url",
-      "id": "mail-link",
-      "label": "Mail link"
-    },
-    {
-      "type": "text",
-      "id": "mail-text",
-      "label": "Mail label"
-    },
-
-    
-    {
-      "type": "text",
+      "type": "inline_richtext",
       "id": "heading",
       "default": "Contact form",
       "label": "Heading"

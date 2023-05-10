@@ -236,14 +236,6 @@
       document.documentElement.classList.add('shopify-design-mode');
     }
     </script>
-    
-<!--     <link href="https://fonts.cdnfonts.com/css/hagrid-trial" rel="stylesheet"> -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Taviraj:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
-     {{ 'a-style.css' | asset_url | stylesheet_tag }}
-     {{ 'custom-style.css' | asset_url | stylesheet_tag }}
   </head>
 
   <body class="gradient">
@@ -301,9 +293,5 @@
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-    <script src="{{ 'a-script.js' | asset_url }}" defer="defer"></script>
-    <script src="{{ 'custom-script.js' | asset_url }}" defer="defer"></script>
   </body>
 </html>
